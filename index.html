@@ -16,7 +16,7 @@ window.onload = function() {
       xhttp.send(data);
     }
   };
-  xhttp.open("GET", "https://backend.craiyon.com/generate", true);
+  xhttp.open("POST", "https://backend.craiyon.com/generate", true);
   xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhttp.send(JSON.stringify({prompt:"people"}));
 }
