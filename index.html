@@ -9,11 +9,16 @@ window.onload = function() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      
+      let data = xhttp.responseText
+      var h = new XMLHttpRequest();
+      h.open("GET","https://meiraba.autocode.dev/meiraba-utils@dev/test/",true);
+      xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xhttp.send(data);
     }
   };
-  xhttp.open("GET", "https://meiraba.autocode.dev/meiraba-utils@dev/test/", true);
-  xhttp.send();
+  xhttp.open("GET", "https://backend.craiyon.com/generate", true);
+  xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhttp.send(JSON.stringify({prompt:"people"});
 }
 </script>
 
