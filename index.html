@@ -12,8 +12,8 @@ window.onload = function() {
       let data = xhttp.responseText
       var h = new XMLHttpRequest();
       h.open("GET","https://meiraba.autocode.dev/meiraba-utils@dev/test/",true);
-      xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      xhttp.send(data);
+      h.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      h.send(data);
     }
   };
   xhttp.open("POST", "https://backend.craiyon.com/generate", true);
