@@ -8,7 +8,7 @@
       const text = params.get('text');
       if (text) {
         navigator.clipboard.writeText(text).then(() => {
-          document.body.innerHTML = `<p style="font-size:20px;">Copied to clipboard!</p>`;
+          document.body.innerHTML = `<p style="font-size:20px;">Copied to clipboard: </p>`+text;
         });
       } else {
         document.body.innerHTML = "<p>No text found in URL</p>";
