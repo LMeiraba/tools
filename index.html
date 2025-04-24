@@ -1,27 +1,21 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>Copy Text</title>
+  <script>
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const text = params.get('text');
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          document.body.innerHTML = `<p style="font-size:20px;">Copied to clipboard!</p>`;
+        });
+      } else {
+        document.body.innerHTML = "<p>No text found in URL</p>";
+      }
+    };
+  </script>
+</head>
 <body>
-
-<h2>Hello</h2>
-
-<script>
-window.onload = function() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      let data = xhttp.responseText
-      console.log(data)
-      var h = new XMLHttpRequest();
-      h.open("GET","https://meiraba.autocode.dev/meiraba-utils@dev/test/",true);
-      h.setRequestHeader("Content-Type", "application/json");
-      h.send(JSON.stringify(data));
-    }
-  };
-  xhttp.open("POST", "https://backend.craiyon.com/generate", true);
-  xhttp.setRequestHeader("Content-Type", "application/json");
-  xhttp.send(JSON.stringify({prompt:"people"}));
-}
-</script>
-
 </body>
 </html>
