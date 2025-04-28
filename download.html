@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auto File Downloader</title>
+  <script>
+    window.onload = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const fileUrl = params.get('url');
+      const fileName = params.get('name') || 'download';
+
+      if (!fileUrl) {
+        document.body.innerHTML = "<p style='font-size:20px;'>Error: No URL provided.</p>";
+        return;
+      }
+      document.body.innerHTML = `<p style="font-size:20px;">Downloading <b>${fileName}</b>...</p>`;
+
+      try {
+        const response = await fetch(fileUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        document.body.innerHTML = `<p style="font-size:20px;">Error downloading file.</p>`;
+      }
+    };
+  </script>
+</head>
+<body>
+</body>
+</html>
