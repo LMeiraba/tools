@@ -13,7 +13,7 @@
         document.body.innerHTML = "<p style='font-size:20px;'>Error: No URL provided.</p>";
         return;
       }
-      document.body.innerHTML = `<p style="font-size:20px;">Downloading <b>${fileName}</b>...</p>`;
+      document.body.innerHTML = `<p style="font-size:20px;">Downloading <b>${fileUrl}</b> as \n<b>${fileName}</b>...</p>`;
 
       try {
         const response = await fetch(fileUrl);
