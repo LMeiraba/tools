@@ -1,21 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Copy Text</title>
-  <script>
-    window.onload = () => {
-      const params = new URLSearchParams(window.location.search);
-      const text = params.get('text');
-      if (text) {
-        navigator.clipboard.writeText(text).then(() => {
-          document.body.innerHTML = `<p style="font-size:20px;">Copied to clipboard: </p>`+text;
-        });
-      } else {
-        document.body.innerHTML = "<p>No text found in URL</p>";
-      }
-    };
-  </script>
+  <title>Some Usefull tools</title>
 </head>
 <body>
+  <h1>List of Tools</h1>
+  <p>Copy text to clipboard: https://lmeiraba.github.io/tools/copyToClipboard?text=some_text_here<br>
+Download a file: https://lmeiraba.github.io/tools/download?url=https://i.imgur.com/uEwubTB.jpeg&name=lol.jpeg</p>
 </body>
 </html>
