@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Copy Text</title>
+  <script>
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const text = params.get('text');
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          document.body.innerHTML = `<p style="font-size:20px;">Copied to clipboard: </p>`+text;
+        });
+      } else {
+        document.body.innerHTML = "<p>No text found in URL</p>";
+      }
+    };
+  </script>
+</head>
+<body>
+</body>
+</html>
