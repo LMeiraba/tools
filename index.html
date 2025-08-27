@@ -1,11 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Some Usefull tools</title>
+  <meta charset="UTF-8">
+  <title>Some usefull tools</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 2em;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1em;
+      overflow: auto;
+    }
+    code {
+      background: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-  <h1>List of Tools</h1>
-  <p>Copy text to clipboard: https://lmeiraba.github.io/tools/copyToClipboard?text=some_text_here<br>
-Download a file: https://lmeiraba.github.io/tools/download?url=https://i.imgur.com/uEwubTB.jpeg&name=lol.jpeg</p>
+  <h1>README</h1>
+  <div id="content">Loading README...</div>
+
+  <script>
+    fetch(`https://raw.githubusercontent.com/lmeiraba/tools/main/readme.md`)
+      .then(response => {
+        if (!response.ok) throw new Error('Could not load README.md');
+        return response.text();
+      })
+      .then(markdown => {
+        document.getElementById('content').innerHTML = marked.parse(markdown);
+      })
+      .catch(err => {
+        document.getElementById('content').innerText = err.message;
+      });
+  </script>
 </body>
 </html>
