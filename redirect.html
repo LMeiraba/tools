@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    function redirectToURL(url) {
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        window.location.href = url;
+      } else {
+        showURLForm('Invalid or missing URL. Please enter a valid URL:');
+      }
+    }
+
+    function showURLForm(message) {
+      const formHTML = `
+        <h2>${message}</h2>
+        <form onsubmit="event.preventDefault(); redirectToURL(this.url.value);">
+          <input type="url" name="url" placeholder="https://example.com" required style="width: 300px;">
+          <button type="submit">Go</button>
+        </form>
+      `;
+      document.body.innerHTML = formHTML;
+    }
+
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      const url = params.get('url');
+      redirectToURL(url);
+    };
+  </script>
+</head>
+<body>
+  Redirecting...
+</body>
+</html>
