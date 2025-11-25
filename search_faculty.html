@@ -129,7 +129,7 @@
             <label for="faculty-search" class="sr-only">Search faculty</label>
             <label for="loading" class="loading_label">Loading the data pls wait...</label>
             <input id="faculty-search" type="search" autocomplete="off"
-                placeholder="Search faculty by name or department…" autocorrect="off" spellcheck="false"
+                placeholder="Search faculty by name..." autocorrect="off" spellcheck="false"
                 oninput="handleSearch(this.value)"/>
             <div id="suggestions" class="suggestions" role="listbox" style="display: none;">
             </div>
@@ -139,7 +139,7 @@
     <script>
         document.getElementById('faculty-search').style.display = 'none';
         const FACULTY = []
-        $.get('https://api.allorigins.win/raw?url=https://www.bmsce.ac.in/', function (htmlData) {
+        $.get('https://api.meiraba.me/proxy?url=https://www.bmsce.ac.in/', function (htmlData) {
             var $virtualDom = $('<div>').html(htmlData);
             var academicsSection = $virtualDom
                 .find("a.dropdown-toggle:contains('Academics')")
@@ -147,9 +147,9 @@
             var urls = academicsSection.find('.dropdown-mega-sub-nav a').map(function () {
                 return $(this).attr('href').replace("About", "Faculty");
             }).get();
-            console.log("Fetched URLs:", urls);
+            //console.log("Fetched URLs:", urls);
             urls.forEach(function (url) {
-                $.get('https://api.allorigins.win/raw?url=' + url, function (fhtml) {
+                $.get('https://api.meiraba.me/proxy?url=' + url, function (fhtml) {
                     var $facultyDom = $('<div>').html(fhtml);
                     $facultyDom.find('.row.py-2.mb-0').each(function () {
                         var $this = $(this);
@@ -173,6 +173,7 @@
 
         const input = document.getElementById('faculty-search');
         const suggestions = document.getElementById('suggestions');
+        console.log(FACULTY)
         function handleSearch(text) {
             console.log(text)
             suggestions.innerHTML = '';
@@ -186,7 +187,7 @@
                 div.className = 'result-item';
 
                 div.innerHTML = `
-                <a href="${f.url}" target="_blank"><strong>${f.name}</strong><span>${f.department}</span></a>`;
+                <a href="${f.url}" target="_blank"><strong>${f.name}</strong>(${f.email})<span>${f.department}</span></a>`;
                 div.onclick = async () => {
                     suggestions.style.display = 'none';
                 };
