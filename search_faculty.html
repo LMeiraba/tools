@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Faculty Search</title>
+    <style>
+        :root {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        .search-wrap {
+            max-width: 560px;
+            margin: 48px auto;
+            position: relative;
+        }
+
+        input[type="search"] {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 20;
+            padding: 6px;
+        }
+
+        .suggestions[hidden] {
+            display: none;
+        }
+
+        /* NEW — since you're using <div class="result-item"> */
+        .result-item {
+            margin: 4px 0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .result-item a {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            text-decoration: none;
+            color: #111;
+            padding: 10px 12px;
+            font-size: 15px;
+            border-radius: 6px;
+        }
+
+        /* Hover styles */
+        .result-item a:hover,
+        .result-item.active a {
+            background: #0066ff;
+            color: white;
+        }
+
+        .result-item a span {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Fix span color when hovered */
+        .result-item a:hover span {
+            color: white;
+        }
+        .result-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #111;
+    padding: 10px 12px;
+    border-radius: 6px;
+}
+
+.result-link .text {
+    display: flex;
+    flex-direction: column;
+}
+
+.result-link .icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.55;
+    flex-shrink: 0;
+}
+
+.result-item:hover .icon {
+    opacity: 1;
+}
+
+.result-item a:hover,
+.result-item.active a {
+    background: #0066ff;
+    color: white;
+}
+
+.result-item a:hover span {
+    color: white;
+}
+
+.result-item a:hover .icon {
+    filter: invert(1);
+}
+
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="search-wrap" role="search">
+            <label for="faculty-search" class="sr-only">Search faculty</label>
+            <label for="loading" class="loading_label">Loading the data pls wait...</label>
+            <input id="faculty-search" type="search" autocomplete="off"
+                placeholder="Search faculty by name or department…" autocorrect="off" spellcheck="false"
+                oninput="handleSearch(this.value)"/>
+            <div id="suggestions" class="suggestions" role="listbox" style="display: none;">
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('faculty-search').style.display = 'none';
+        const FACULTY = []
+        $.get('https://api.allorigins.win/raw?url=https://www.bmsce.ac.in/', function (htmlData) {
+            var $virtualDom = $('<div>').html(htmlData);
+            var academicsSection = $virtualDom
+                .find("a.dropdown-toggle:contains('Academics')")
+                .closest('li.dropdown-mega');
+            var urls = academicsSection.find('.dropdown-mega-sub-nav a').map(function () {
+                return $(this).attr('href').replace("About", "Faculty");
+            }).get();
+            console.log("Fetched URLs:", urls);
+            urls.forEach(function (url) {
+                $.get('https://api.allorigins.win/raw?url=' + url, function (fhtml) {
+                    var $facultyDom = $('<div>').html(fhtml);
+                    $facultyDom.find('.row.py-2.mb-0').each(function () {
+                        var $this = $(this);
+                        var data = {
+                            name: $this.find('h2').text().trim(),
+                            department: url.replace("https://bmsce.ac.in/home/",'').replace("-Faculty", "").trim(),
+                            designation: $this.find('.font-weight-semibold').text().trim(),
+                            qualification: $this.find('.col-md-9 > div').eq(2).text().trim(),
+                            email: $this.find("p:contains('@')").text().trim(),
+                            research: $this.find("b:contains('Research Interests')").parent().text().replace('Research Interests:', '').trim(),
+                            image: $this.find('img').attr('src'),
+                            url: $this.find('a').attr('href')
+                        };
+                        FACULTY.push(data);
+                    });
+                });
+            })
+            document.querySelector('.loading_label').style.display = 'none';
+            document.getElementById('faculty-search').style.display = 'block';
+        });
+
+        const input = document.getElementById('faculty-search');
+        const suggestions = document.getElementById('suggestions');
+        function handleSearch(text) {
+            console.log(text)
+            suggestions.innerHTML = '';
+            let matches = findMatches(text)
+            if (matches.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            matches.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+
+                div.innerHTML = `
+                <a href="${f.url}" target="_blank"><strong>${f.name}</strong><span>${f.department}</span></a>`;
+                div.onclick = async () => {
+                    suggestions.style.display = 'none';
+                };
+
+                suggestions.appendChild(div);
+            });
+
+            suggestions.style.display = 'block';
+        }
+        function findMatches(text) {
+            const lowerText = text.toLowerCase();
+            return FACULTY.filter(faculty => faculty.name.toLowerCase().includes(lowerText));
+        }
+
+
+    </script>
+</body>
+
+</html>
